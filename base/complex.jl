@@ -551,10 +551,15 @@ function sin{T<:AbstractFloat}(z::Complex{T})
     if !isfinite(zr) && zi == 0 return Complex(oftype(zr, NaN), zi) end
     if !isfinite(zr) && isfinite(zi) return Complex(oftype(zr, NaN), oftype(zi, NaN)) end
     if !isfinite(zr) && !isfinite(zi) return Complex(zr, oftype(zi, NaN)) end
-    Complex(sin(zr)*cosh(zi), cos(zr)*sinh(zi))
+    _sin(z)
 end
 
-sin(z::Complex) = sin(float(z))
+sin(z::Complex) = _sin(z)
+
+function _sin(z::Complex)
+    zr, zi = reim(z)
+    Complex(sin(zr)*cosh(zi), cos(zr)*sinh(zi))
+end
 
 function cos{T<:AbstractFloat}(z::Complex{T})
     zr, zi = reim(z)
@@ -569,10 +574,15 @@ function cos{T<:AbstractFloat}(z::Complex{T})
         return Complex(oftype(zr, NaN), zi==0 ? -copysign(zi, zr) : oftype(zi, NaN))
     end
     if isnan(zr) && zi==0 return Complex(zr, abs(zi)) end
-    Complex(cos(zr)*cosh(zi), -sin(zr)*sinh(zi))
+    _cos(z)
 end
 
-cos(z::Complex) = cos(float(z))
+cos(z::Complex) = _cos(z)
+
+function _cos(z::Complex)
+    zr, zi = reim(z)
+    Complex(cos(zr)*cosh(zi), -sin(zr)*sinh(zi))
+end
 
 function tan(z::Complex)
     zr, zi = reim(z)
